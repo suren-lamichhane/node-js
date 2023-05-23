@@ -34,40 +34,42 @@ jobs:
      runs-on: ubuntu-latest
      needs: build
     
-  steps: 
-    - name: checkout code
-      uses: actions/checkout@v3
-    - name: Downoad the artifact from the build job that we uploaded
-      uses: actions/download-artifact@v3
-      with:
+     steps: 
+     - name: checkout code  
+     
+       
+       uses: actions/checkout@v3
+     - name: Downoad the artifact from the build job that we uploaded
+       uses: actions/download-artifact@v3
+       with:
           name: node_modules
           path: ./node_modules
-    - name: Set up ssh key
-      run: |
+     - name: Set up ssh key
+       run: |
           echo "${{secrets.PRIVATE_KEY}}" >> suren.pem
           chmod 600 suren.pem
           
   
-    - name: copy files to ec2
-      run: |
+     - name: copy files to ec2
+       run: |
         scp -i suren.pem \
         -o StrictHostKeyChecking=no \
         -o UserKnownHostsFile=/dev/null \
         -r ./* ubuntu@${{ secrets.EC2_IP }}:/home/ubuntu
        
    
-    - name: Install Mysql
-      run: |
+     - name: Install Mysql
+       run: |
          ssh -o StrictHostKeyChecking=no -i suren.pem ubuntu@${{ secrets.EC2_IP }} 'sudo apt-get update -y && sudo apt-get install mysql-server -y'
     
-    - name: Start MySQL service
-      run: |
+     - name: Start MySQL service
+       run: |
           ssh -o StrictHostKeyChecking=no -i suren.pem ubuntu@${{ secrets.EC2_IP }} 'sudo systemctl start mysql'
     
     
     
-    - name: Create Mysql User
-      run: |
+     - name: Create Mysql User
+       run: |
         ssh -o StrictHostKeyChecking=no -i suren.pem ubuntu@${{ secrets.EC2_IP }} << EOF
         sudo mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;"
         sudo mysql -u root -e "FLUSH PRIVILEGES;"
@@ -81,18 +83,18 @@ jobs:
 
 
 
-    - name: Create database using the user we just created 
-      run: |
+     - name: Create database using the user we just created 
+       run: |
         ssh -o StrictHostKeyChecking=no -i suren.pem ubuntu@${{ secrets.EC2_IP }} << EOF
         sudo mysql -u suren -psuren123 -e "CREATE DATABASE IF NOT EXISTS my_db;"
         EOF
 
-    - name: Create Table
-      run: |
+     - name: Create Table
+       run: |
           ssh -o StrictHostKeyChecking=no -i suren.pem ubuntu@${{ secrets.EC2_IP}} 'mysql -u suren -psuren123 -h localhost  -D my_db -e "CREATE TABLE IF NOT EXISTS employee (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), phone VARCHAR(255), email VARCHAR(255), address VARCHAR(255));"'
-    - name: Install pm2
-      run: |
-       ssh -o StrictHostKeyChecking=no -i suren.pem ubuntu@${{ secrets.EC2_IP }} '
+     - name: Install pm2
+       run: |
+        ssh -o StrictHostKeyChecking=no -i suren.pem ubuntu@${{ secrets.EC2_IP }} '
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash &&
         export NVM_DIR="$HOME/.nvm" &&
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" &&
