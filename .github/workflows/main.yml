@@ -52,7 +52,7 @@ jobs:
   
      - name: copy files to ec2
        run: |
-        scp -i suren.pem \
+        scp -i suren.pem /home/suren/suren.pem \
         -o StrictHostKeyChecking=no \
         -o UserKnownHostsFile=/dev/null \
         -r ./* ubuntu@${{ secrets.INSTANCE_IP }}:/home/ubuntu
