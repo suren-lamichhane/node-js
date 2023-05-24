@@ -52,10 +52,10 @@ jobs:
   
      - name: copy files to ec2
        run: |
-        scp -i suren.pem \
+        scp -i chmod 400 /home/suren/suren.pem \
         -o StrictHostKeyChecking=no \
         -o UserKnownHostsFile=/dev/null \
-        -r ./* ubuntu@${{ secrets.INSTANCE_IP }}:/home/ubuntu
+        -r ./* ubuntu@${{ secrets.54.161.211.33 }}:/home/ubuntu
        
    
      - name: Install Mysql
