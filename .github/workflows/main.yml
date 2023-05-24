@@ -55,7 +55,7 @@ jobs:
         scp -i chmod 400 /home/suren/suren.pem \
         -o StrictHostKeyChecking=no \
         -o UserKnownHostsFile=/dev/null \
-        -r ./* ubuntu@${{ secrets.54.161.211.33 }}:/home/ubuntu
+        -r ./* ubuntu@${{ secrets.INSTANCE_IP }}:/home/ubuntu
        
    
      - name: Install Mysql
