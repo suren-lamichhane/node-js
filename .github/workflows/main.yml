@@ -55,7 +55,7 @@ jobs:
         scp -i suren.pem \
         -o StrictHostKeyChecking=no \
         -o UserKnownHostsFile=/dev/null \
-        -r ./* ubuntu@54.161.211.33:/home/ubuntu
+        -r ./* ubuntu@54.161.211.33:/home/suren
        
    
      - name: Install Mysql
